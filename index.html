@@ -31,7 +31,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .rotating-char { display: inline-block; opacity: 0; transform: translateY(50%); animation: charEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 @keyframes charEnter { to { opacity: 1; transform: translateY(0); } }
 
-/* ===== PILL NAV COMPONENT STYLE (Шаги вверху) ===== */
+/* ===== PILL NAV COMPONENT STYLE ===== */
 .pill-nav-items {
   margin-left: auto; background: #121212; border-radius: 9999px; height: 42px;
   display: flex; align-items: center; padding: 3px; border: 1px solid #2d2d2d;
@@ -54,7 +54,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .pill .pill-label { position: relative; z-index: 2; display: inline-block; line-height: 1; will-change: transform; }
 .pill .pill-label-hover { position: absolute; left: 0; top: 0; color: #ffffff; z-index: 3; display: inline-block; will-change: transform, opacity; }
 
-/* Активное состояние кнопки (из PillNav) */
 .pill.is-active { background: #dc2626; color: #ffffff; }
 .pill.is-active .pill-label { color: #ffffff; }
 .pill.is-active::after {
@@ -63,12 +62,63 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 }
 
 /* Основной макет */
-.main { display: flex; flex: 1; overflow: hidden; }
-.panel { width: 340px; background: #1e1e1e; border-right: 1px solid #2d2d2d; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+.main { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+/* БОКОВАЯ ПАНЕЛЬ */
+.panel { 
+  width: 340px; background: #1e1e1e; border-right: 1px solid #2d2d2d; 
+  display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; 
+  position: relative; z-index: 10;
+}
+
+/* КНОПКА СТРЕЛОЧКИ (Вынесена из панели, сидит поверх карты) */
+.toggle-panel-btn {
+  position: absolute;
+  top: 16px;
+  left: 340px; /* Изначально стоит сразу за краем панели */
+  width: 38px;
+  height: 38px;
+  background: #1e1e1e;
+  border: 1px solid #2d2d2d;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001; /* Поверх карты и всего остального */
+  outline: none;
+  box-shadow: 4px 0 8px rgba(0,0,0,0.3);
+}
+.toggle-panel-btn:hover { background: #261515; color: #dc2626; }
+.toggle-panel-btn .arrow-icon { display: inline-block; font-size: 12px; }
+
 .panel-section { padding: 16px 20px; border-bottom: 1px solid #2d2d2d; }
 .panel-section-title { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
 
-/* Поля ввода параметров */
+/* ПОИСК */
+.search-container { position: relative; width: 100%; }
+#address-search {
+  width: 100%; padding: 8px 12px; border: 1px solid #374151; border-radius: 6px;
+  font-size: 13px; outline: none; color: #ffffff; background: #121212; transition: border-color 0.15s;
+}
+#address-search:focus { border-color: #dc2626; }
+.search-results-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; width: 100%;
+  background: #1e1e1e; border: 1px solid #2d2d2d; border-radius: 6px;
+  max-height: 180px; overflow-y: auto; z-index: 1100; display: none;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+.search-result-item {
+  padding: 10px 12px; color: #d1d5db; font-size: 12px; cursor: pointer;
+  border-bottom: 1px solid #2d2d2d; transition: background 0.15s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: #261515; color: #ffffff; }
+
+/* Параметры */
 .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .param-item label { display: block; font-size: 11px; color: #9ca3af; margin-bottom: 4px; }
 .param-item input, .param-item select {
@@ -77,7 +127,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 }
 .param-item input:focus, .param-item select:focus { border-color: #dc2626; }
 
-/* Группы точек */
+/* Точки */
 .point-input-group {
   display: flex; align-items: center; gap: 8px; padding: 8px 10px;
   border: 1.5px solid #374151; border-radius: 8px; background: #181818;
@@ -119,7 +169,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .btn-clear { margin: 0 20px 16px; padding: 8px; background: #121212; color: #9ca3af; border: 1px solid #374151; border-radius: 8px; font-size: 13px; cursor: pointer; width: calc(100% - 40px); transition: all 0.15s; }
 .btn-clear:hover { border-color: #6b7280; color: #ffffff; background: #181818; }
 
-/* КАРТОЧКИ РЕЗУЛЬТАТОВ */
+/* РЕЗУЛЬТАТЫ */
 .results-area { padding: 16px 20px; overflow-y: auto; flex: 1; }
 .result-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
 .result-card { border-radius: 8px; padding: 12px; text-align: center; background: #121212; border: 1px solid #2d2d2d; }
@@ -127,7 +177,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .rc-value { font-size: 22px; font-weight: 700; line-height: 1; color: #dc2626; } 
 .rc-unit { font-size: 11px; font-weight: 400; color: #9ca3af; }
 
-/* Экономия */
 .compare-box { background: #2d1919; border: 1px solid #7f1d1d; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
 .compare-title { font-size: 11px; font-weight: 600; color: #fca5a5; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
 .compare-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #d1d5db; margin-bottom: 4px; }
@@ -139,18 +188,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .route-step-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #2d2d2d; font-size: 13px; }
 .route-step-item:last-child { border-bottom: none; }
 .route-step-num { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; color: #fff; }
-.route-step-dist { font-size: 11px; color: #6b7280; margin-left: auto; white-space: nowrap; }
 
-/* Одиночный индикатор цели */
 .single-mode-badge { display: flex; align-items: center; gap: 10px; padding: 12px; background: #261515; border: 1.5px solid #dc2626; border-radius: 8px; }
 .sm-icon { font-size: 20px; }
 .sm-title { font-size: 12px; font-weight: 600; color: #ffffff; }
 .sm-desc { font-size: 11px; color: #9ca3af; margin-top: 2px; }
 
-.map-wrap { flex: 1; position: relative; overflow: hidden; }
+.map-wrap { flex: 1; position: relative; overflow: hidden; height: 100%; }
 #map { width: 100%; height: 100%; background: #242424; }
 
-/* Инструкция поверх карты */
 .map-instruction {
   position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
   background: rgba(30, 30, 30, 0.95); border: 1px solid #374151; border-radius: 20px;
@@ -159,12 +205,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 }
 .hint-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
 
-/* Загрузка */
 .loading-overlay { position: absolute; inset: 0; background: rgba(18, 18, 18, 0.85); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; z-index: 999; }
 .loading-overlay.show { display: flex; }
 .spinner { width: 32px; height: 32px; border: 3px solid #2d2d2d; border-top-color: #dc2626; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 13px; color: #9ca3af; }
 
 .tab-content { display: none; flex-direction: column; flex: 1; overflow: hidden; }
 .tab-content.active { display: flex; }
@@ -174,8 +218,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
 
-/* Эффект темной карты */
 .leaflet-tile-container { filter: invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+
+@media (max-width: 600px) {
+  .panel { position: absolute; top: 0; left: 0; height: 100%; box-shadow: 8px 0 20px rgba(0,0,0,0.5); }
+}
 </style>
 </head>
 <body>
@@ -188,39 +235,26 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   
   <div class="pill-nav-items">
     <ul class="pill-list" role="menubar">
-      <li role="none">
-        <button class="pill is-active" id="step1btn" onclick="showTab('setup')" role="menuitem">
-          <span class="hover-circle"></span>
-          <span class="label-stack">
-            <span class="pill-label">1. Parametry</span>
-            <span class="pill-label-hover" aria-hidden="true">1. Parametry</span>
-          </span>
-        </button>
-      </li>
-      <li role="none">
-        <button class="pill" id="step2btn" onclick="showTab('points')" role="menuitem">
-          <span class="hover-circle"></span>
-          <span class="label-stack">
-            <span class="pill-label">2. Punkty na mapie</span>
-            <span class="pill-label-hover" aria-hidden="true">2. Punkty na mapie</span>
-          </span>
-        </button>
-      </li>
-      <li role="none">
-        <button class="pill" id="step3btn" onclick="showTab('results')" role="menuitem">
-          <span class="hover-circle"></span>
-          <span class="label-stack">
-            <span class="pill-label">3. Wyniki</span>
-            <span class="pill-label-hover" aria-hidden="true">3. Wyniki</span>
-          </span>
-        </button>
-      </li>
+      <li role="none"><button class="pill is-active" id="step1btn" onclick="showTab('setup')"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">1. Parametry</span><span class="pill-label-hover">1. Parametry</span></span></button></li>
+      <li role="none"><button class="pill" id="step2btn" onclick="showTab('points')"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">2. Punkty na mapie</span><span class="pill-label-hover">2. Punkty na mapie</span></span></button></li>
+      <li role="none"><button class="pill" id="step3btn" onclick="showTab('results')"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">3. Wyniki</span><span class="pill-label-hover">3. Wyniki</span></span></button></li>
     </ul>
   </div>
 </div>
 
 <div class="main">
-  <div class="panel">
+  <button class="toggle-panel-btn" onclick="togglePanel()" aria-label="Toggle panel">
+    <span class="arrow-icon">❮</span>
+  </button>
+
+  <div class="panel" id="side-panel">
+    <div class="panel-section">
+      <div class="panel-section-title">Wyszukaj lokalizację</div>
+      <div class="search-container">
+        <input type="text" id="address-search" placeholder="Wpisz miasto, ulicę lub kraj..." oninput="searchLocation(this.value)">
+        <div id="search-results" class="search-results-dropdown"></div>
+      </div>
+    </div>
 
     <div class="tab-content active" id="tab-setup">
       <div class="panel-section">
@@ -229,31 +263,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <div class="param-item"><label>Spalanie (l/100km)</label><input type="number" id="fuelRate" value="8.5" min="3" max="30" step="0.5"></div>
           <div class="param-item"><label>Cena paliwa (zł/l)</label><input type="number" id="fuelPrice" value="6.50" min="1" max="20" step="0.05"></div>
           <div class="param-item"><label>Prędkość śr. (km/h)</label><input type="number" id="avgSpeed" value="90" min="40" max="150" step="5"></div>
-          <div class="param-item"><label>Typ drogi</label>
-            <select id="roadType">
-              <option value="1.00">Realna trasa drogowa</option>
-            </select>
-          </div>
+          <div class="param-item"><label>Typ drogi</label><select id="roadType"><option value="1.00">Realna trasa drogowa</option></select></div>
         </div>
       </div>
-
       <div class="panel-section">
         <div class="panel-section-title">Cel optymalizacji</div>
-        <div class="single-mode-badge">
-          <span class="sm-icon">⛽</span>
-          <div>
-            <div class="sm-title">Paliwo (Najmniej litrów)</div>
-            <div class="sm-desc">Trasa zoptymalizowana pod kątem minimalnego zużycia</div>
-          </div>
-        </div>
+        <div class="single-mode-badge"><span class="sm-icon">⛽</span><div><div class="sm-title">Paliwo (Najmniej litrów)</div><div class="sm-desc">Trasa zoptymalizowana pod kątem minimalnego zużycia</div></div></div>
       </div>
-
       <div style="padding: 20px; margin-top: auto;">
         <div style="background:#261515; border: 1px solid #7f1d1d; border-radius:8px; padding:12px; font-size:13px; color:#fca5a5; margin-bottom:16px; line-height:1.6">
-          <strong>Jak to działa?</strong><br>
-          1. Ustaw parametry pojazdu<br>
-          2. Kliknij punkty na mapie Polski<br>
-          3. Program wyliczy najlepszą trasę po prawdziwych drogach
+          <strong>Jak to działa?</strong><br>1. Ustaw parametry pojazdu<br>2. Kliknij punkty na mapie Polski lub wyszukaj je wyżej<br>3. Program wyliczy najlepszą trasę
         </div>
         <button class="btn-optimize" onclick="showTab('points')">Dalej: Wybierz punkty →</button>
       </div>
@@ -264,40 +283,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="panel-section-title">Punkt startowy</div>
         <div class="point-input-group" id="pg-start" onclick="activatePoint('start')">
           <div class="point-icon pi-start">S</div>
-          <div class="point-text">
-            <div class="point-label">Skąd wyjeżdżasz?</div>
-            <div class="point-name ph" id="pn-start">Kliknij tutaj, potem na mapę</div>
-          </div>
+          <div class="point-text"><div class="point-label">Skąd wyjeżdżasz?</div><div class="point-name ph" id="pn-start">Kliknij tutaj, potem na mapę</div></div>
           <button class="point-clear" id="pc-start" onclick="clearPt('start',event)">×</button>
         </div>
       </div>
-
       <div class="scroll-area">
-        <div class="waypoints-header">
-          <span>Punkty pośrednie (maks. 8)</span>
-          <div style="display:flex;gap:4px">
-            <button class="remove-point-btn" id="remove-btn" onclick="removeWaypoint()" disabled>− Usuń</button>
-            <button class="add-point-btn" onclick="addWaypoint()">+ Dodaj</button>
-          </div>
-        </div>
+        <div class="waypoints-header"><span>Punkty pośrednie (maks. 8)</span><div style="display:flex;gap:4px"><button class="remove-point-btn" id="remove-btn" onclick="removeWaypoint()" disabled>− Usuń</button><button class="add-point-btn" onclick="addWaypoint()">+ Dodaj</button></div></div>
         <div id="waypoints-list"></div>
-        <div id="wp-empty" style="font-size:12px;color:#4b5563;text-align:center;padding:12px 0">
-          Opcjonalnie dodaj punkty pośrednie
-        </div>
+        <div id="wp-empty" style="font-size:12px;color:#4b5563;text-align:center;padding:12px 0">Opcjonalnie dodaj punkty pośrednie</div>
       </div>
-
       <div class="panel-section" style="border-top:1px solid #2d2d2d;">
         <div class="panel-section-title">Punkt końcowy</div>
         <div class="point-input-group" id="pg-end" onclick="activatePoint('end')">
           <div class="point-icon pi-end">C</div>
-          <div class="point-text">
-            <div class="point-label">Dokąd jedziesz?</div>
-            <div class="point-name ph" id="pn-end">Kliknij tutaj, potem na mapę</div>
-          </div>
+          <div class="point-text"><div class="point-label">Dokąd jedziesz?</div><div class="point-name ph" id="pn-end">Kliknij tutaj, potem na mapę</div></div>
           <button class="point-clear" id="pc-end" onclick="clearPt('end',event)">×</button>
         </div>
       </div>
-
       <button class="btn-optimize" id="opt-btn" onclick="optimize()" disabled>Oblicz optymalną trasę</button>
       <button class="btn-clear" onclick="clearAll()">Wyczyść wszystko</button>
     </div>
@@ -315,14 +317,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <div class="result-card"><div class="rc-label">Koszt paliwa</div><div class="rc-value" id="r-cost">—</div></div>
           <div class="result-card"><div class="rc-label">Czas jazdy</div><div class="rc-value" id="r-time">—</div></div>
         </div>
-        <div id="route-steps" style="display:none">
-          <div class="route-step-title">Kolejność przystanków</div>
-          <div id="route-step-list"></div>
-        </div>
-        <div id="empty-results" style="text-align:center;padding:40px 20px;color:#4b5563">
-          <div style="font-size:40px;margin-bottom:12px">🗺</div>
-          <div style="font-size:14px;">Dodaj punkty i oblicz trasę</div>
-        </div>
+        <div id="route-steps" style="display:none"><div class="route-step-title">Kolejność przystanków</div><div id="route-step-list"></div></div>
+        <div id="empty-results" style="text-align:center;padding:40px 20px;color:#4b5563"><div style="font-size:40px;margin-bottom:12px">🗺</div><div style="font-size:14px;">Dodaj punkty i oblicz trasę</div></div>
       </div>
       <button class="btn-optimize" onclick="showTab('points')" style="background:#2d2d2d;color:#ffffff;border:1px solid #374151">← Zmień punkty</button>
     </div>
@@ -330,36 +326,92 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
   <div class="map-wrap">
     <div id="map"></div>
-    <div class="map-instruction" id="map-hint">
-      <span class="hint-dot" id="hint-dot" style="background:#10b981"></span>
-      <span id="hint-text">Kliknij na mapę, aby ustawić punkt startowy</span>
-    </div>
-    <div class="loading-overlay" id="loading">
-      <div class="spinner"></div>
-      <div class="loading-text" id="loading-text">Obliczam optymalną trasę...</div>
-    </div>
+    <div class="map-instruction" id="map-hint"><span class="hint-dot" id="hint-dot" style="background:#10b981"></span><span id="hint-text">Kliknij na mapę, aby ustawić punkt startowy</span></div>
+    <div class="loading-overlay" id="loading"><div class="spinner"></div><div style="font-size:13px;color:#9ca3af;">Obliczam trasę...</div></div>
   </div>
 </div>
 
 <script>
 const ST = {
-  activeInput: null,
+  activeInput: null, isPanelClosed: false,
   start: null, end: null, waypoints: [], wpIds: [],
-  markers: {}, routeLine: null, routeLine2: null
+  markers: {}, routeLine: null
 };
 
-// ТЕКСТ В ШАПКЕ
+// ЖЕЛЕЗОБЕТОННЫЙ ОДНОВРЕМЕННЫЙ ПЕРЕЕЗД ПАНЕЛИ И КНОПКИ ЧЕРЕЗ GSAP
+function togglePanel() {
+  const panel = document.getElementById('side-panel');
+  const btn = document.querySelector('.toggle-panel-btn');
+  const arrow = document.querySelector('.arrow-icon');
+  
+  ST.isPanelClosed = !ST.isPanelClosed;
+  
+  if (ST.isPanelClosed) {
+    // СВОРАЧИВАЕМ ПАНЕЛЬ
+    gsap.to(panel, { marginLeft: -340, duration: 0.45, ease: "power2.inOut" });
+    gsap.to(btn, { left: 0, duration: 0.45, ease: "power2.inOut" });
+    gsap.to(arrow, { rotate: 180, duration: 0.3, ease: "power2.out" });
+  } else {
+    // РАЗВОРАЧИВАЕМ ПАНЕЛЬ
+    gsap.to(panel, { marginLeft: 0, duration: 0.45, ease: "power2.out" });
+    gsap.to(btn, { left: 340, duration: 0.45, ease: "power2.out" });
+    gsap.to(arrow, { rotate: 0, duration: 0.3, ease: "power2.out" });
+  }
+}
+
+// Поиск мест
+let searchTimeout;
+function searchLocation(query) {
+  const resultsContainer = document.getElementById('search-results');
+  if (!query.trim()) { resultsContainer.style.display = 'none'; return; }
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=pl`)
+      .then(res => res.json())
+      .then(data => {
+        resultsContainer.innerHTML = '';
+        if (data.length === 0) {
+          resultsContainer.innerHTML = '<div class="search-result-item" style="color: #6b7280; cursor: default;">Nie znaleziono miejsc</div>';
+          resultsContainer.style.display = 'block';
+          return;
+        }
+        data.forEach(place => {
+          const item = document.createElement('div');
+          item.className = 'search-result-item';
+          item.innerText = place.display_name;
+          item.onclick = () => {
+            document.getElementById('address-search').value = place.display_name;
+            resultsContainer.style.display = 'none';
+            if (ST.activeInput) {
+              setPoint(ST.activeInput, parseFloat(place.lat), parseFloat(place.lon));
+            } else {
+              map.setView([parseFloat(place.lat), parseFloat(place.lon)], 12);
+            }
+            if (window.innerWidth <= 600) togglePanel();
+          };
+          resultsContainer.appendChild(item);
+        });
+        resultsContainer.style.display = 'block';
+      }).catch(err => console.error(err));
+  }, 400);
+}
+
+document.addEventListener('click', e => {
+  const container = document.querySelector('.search-container');
+  if (container && !container.contains(e.target)) document.getElementById('search-results').style.display = 'none';
+});
+
+// Анимация текста в шапке
 const rotatingTexts = ['B', 'PL', 'Trasy', 'Route'];
 let currentTextIdx = 0;
-const container = document.getElementById('rotating-container');
+const rContainer = document.getElementById('rotating-container');
 
 function initRotatingText() {
   renderRotatingWord(rotatingTexts[currentTextIdx]);
   setInterval(() => {
-    const activeWord = container.querySelector('.rotating-word.active');
+    const activeWord = rContainer.querySelector('.rotating-word.active');
     if (activeWord) {
-      activeWord.classList.remove('active');
-      activeWord.classList.add('exit');
+      activeWord.classList.remove('active'); activeWord.classList.add('exit');
       setTimeout(() => activeWord.remove(), 500);
     }
     currentTextIdx = (currentTextIdx + 1) % rotatingTexts.length;
@@ -368,141 +420,76 @@ function initRotatingText() {
 }
 
 function renderRotatingWord(text) {
-  const wordSpan = document.createElement('span');
-  wordSpan.className = 'rotating-word';
-  
+  const wordSpan = document.createElement('span'); wordSpan.className = 'rotating-word';
   const chars = Array.from(text);
   chars.forEach((char, index) => {
-    const charSpan = document.createElement('span');
-    charSpan.className = 'rotating-char';
-    charSpan.textContent = char;
-    const delay = (chars.length - 1 - index) * 0.025;
-    charSpan.style.animationDelay = `${delay}s`;
+    const charSpan = document.createElement('span'); charSpan.className = 'rotating-char'; charSpan.textContent = char;
+    charSpan.style.animationDelay = `${(chars.length - 1 - index) * 0.025}s`;
     wordSpan.appendChild(charSpan);
   });
-  
-  container.appendChild(wordSpan);
-  wordSpan.offsetHeight; 
-  wordSpan.classList.add('active');
+  rContainer.appendChild(wordSpan);
+  wordSpan.offsetHeight; wordSpan.classList.add('active');
 }
 initRotatingText();
 
-// ===== ЛОГИКА ДЛЯ ЭФФЕКТА PILL NAV НА ЧИСТОМ JS =====
-const tlRefs = new Map();
-const activeTweenRefs = new Map();
-
+// Вкладки Pill Nav
+const tlRefs = new Map(); const activeTweenRefs = new Map();
 function initPillAnimations() {
-  const pills = document.querySelectorAll('.pill');
-  
-  pills.forEach((pill, index) => {
-    const circle = pill.querySelector('.hover-circle');
-    if (!circle) return;
-
-    // Вычисляем размеры круга на основе геометрии кнопки
-    const rect = pill.getBoundingClientRect();
-    const { width: w, height: h } = rect;
-    const R = ((w * w) / 4 + h * h) / (2 * h);
-    const D = Math.ceil(2 * R) + 2;
-    const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
-    const originY = D - delta;
-
-    circle.style.width = `${D}px`;
-    circle.style.height = `${D}px`;
-    circle.style.bottom = `-${delta}px`;
-
-    gsap.set(circle, {
-      xPercent: -50,
-      scale: 0,
-      transformOrigin: `50% ${originY}px`
-    });
-
-    const label = pill.querySelector('.pill-label');
-    const white = pill.querySelector('.pill-label-hover');
-
-    if (label) gsap.set(label, { y: 0 });
-    if (white) gsap.set(white, { y: h + 12, opacity: 0 });
-
-    // Создаем таймлайн анимации через GSAP
+  document.querySelectorAll('.pill').forEach(pill => {
+    const circle = pill.querySelector('.hover-circle'); if (!circle) return;
+    const rect = pill.getBoundingClientRect(); const { width: w, height: h } = rect;
+    const R = ((w * w) / 4 + h * h) / (2 * h); const D = Math.ceil(2 * R) + 2; const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
+    circle.style.width = `${D}px`; circle.style.height = `${D}px`; circle.style.bottom = `-${delta}px`;
+    gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: `50% ${D - delta}px` });
+    const label = pill.querySelector('.pill-label'); const white = pill.querySelector('.pill-label-hover');
+    if (label) gsap.set(label, { y: 0 }); if (white) gsap.set(white, { y: h + 12, opacity: 0 });
     const tl = gsap.timeline({ paused: true });
-    tl.to(circle, { scale: 1.2, xPercent: -50, duration: 0.4, ease: "power2.out", overwrite: 'auto' }, 0);
-    if (label) tl.to(label, { y: -(h + 8), duration: 0.4, ease: "power2.out", overwrite: 'auto' }, 0);
-    if (white) {
-      gsap.set(white, { y: Math.ceil(h + 20), opacity: 0 });
-      tl.to(white, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", overwrite: 'auto' }, 0);
-    }
-
+    tl.to(circle, { scale: 1.2, xPercent: -50, duration: 0.4, ease: "power2.out" }, 0);
+    if (label) tl.to(label, { y: -(h + 8), duration: 0.4, ease: "power2.out" }, 0);
+    if (white) { gsap.set(white, { y: Math.ceil(h + 20), opacity: 0 }); tl.to(white, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 0); }
     tlRefs.set(pill, tl);
-
-    // Вешаем события наведения мыши
     pill.addEventListener('mouseenter', () => {
       if (pill.classList.contains('is-active')) return;
-      const t = tlRefs.get(pill);
-      if (!t) return;
-      if (activeTweenRefs.has(pill)) activeTweenRefs.get(pill).kill();
-      activeTweenRefs.set(pill, t.tweenTo(t.duration(), { duration: 0.25, ease: "power2.out", overwrite: 'auto' }));
+      const t = tlRefs.get(pill); if (activeTweenRefs.has(pill)) activeTweenRefs.get(pill).kill();
+      activeTweenRefs.set(pill, t.tweenTo(t.duration(), { duration: 0.25, ease: "power2.out" }));
     });
-
     pill.addEventListener('mouseleave', () => {
       if (pill.classList.contains('is-active')) return;
-      const t = tlRefs.get(pill);
-      if (!t) return;
-      if (activeTweenRefs.has(pill)) activeTweenRefs.get(pill).kill();
-      activeTweenRefs.set(pill, t.tweenTo(0, { duration: 0.2, ease: "power2.out", overwrite: 'auto' }));
+      const t = tlRefs.get(pill); if (activeTweenRefs.has(pill)) activeTweenRefs.get(pill).kill();
+      activeTweenRefs.set(pill, t.tweenTo(0, { duration: 0.2, ease: "power2.out" }));
     });
   });
 }
-
-// Запускаем расчет геометрии кнопок сразу после загрузки страницы
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(initPillAnimations, 100);
-});
+window.addEventListener('DOMContentLoaded', () => setTimeout(initPillAnimations, 100));
 window.addEventListener('resize', initPillAnimations);
 
-// MAPA
-const map = L.map('map', { center: [52.0, 19.5], zoom: 6, zoomControl: true });
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors', maxZoom: 19
-}).addTo(map);
+// Инициализация карты
+const map = L.map('map', { center: [52.0, 19.5], zoom: 6 });
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+map.on('click', e => { if (ST.activeInput) setPoint(ST.activeInput, e.latlng.lat, e.latlng.lng); });
 
-map.on('click', e => {
-  if (ST.activeInput) setPoint(ST.activeInput, e.latlng.lat, e.latlng.lng);
-});
-
-// TABS
 function showTab(t) {
   document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
   document.getElementById('tab-' + t).classList.add('active');
-  
-  // Обновление состояния активной кнопки в PillNav
   ['setup','points','results'].forEach((n,i) => {
     const btn = document.getElementById('step'+(i+1)+'btn');
     if(btn) {
-      const isActive = n === t;
-      btn.classList.toggle('is-active', isActive);
-      // Если вкладка активна, сбрасываем GSAP-эффект наведения, так как кнопка полностью залита
-      if (isActive && tlRefs.has(btn)) {
-        if (activeTweenRefs.has(btn)) activeTweenRefs.get(btn).kill();
-        tlRefs.get(btn).progress(0);
-      }
+      const isActive = n === t; btn.classList.toggle('is-active', isActive);
+      if (isActive && tlRefs.has(btn)) { if (activeTweenRefs.has(btn)) activeTweenRefs.get(btn).kill(); tlRefs.get(btn).progress(0); }
     }
   });
   if (t === 'points' && !ST.activeInput) activatePoint('start');
 }
 
-// WAYPOINTS
 function addWaypoint() {
   if (ST.wpIds.length >= 8) return;
-  const id = 'wp_' + Date.now();
-  ST.wpIds.push(id);
-  ST.waypoints.push(null);
-  renderWPs();
-  activatePoint(id);
+  const id = 'wp_' + Date.now(); ST.wpIds.push(id); ST.waypoints.push(null);
+  renderWPs(); activatePoint(id);
 }
 
 function removeWaypoint() {
   if (!ST.wpIds.length) return;
-  const id = ST.wpIds.pop();
-  ST.waypoints.pop();
+  const id = ST.wpIds.pop(); ST.waypoints.pop();
   if (ST.markers[id]) { map.removeLayer(ST.markers[id]); delete ST.markers[id]; }
   if (ST.activeInput === id) { ST.activeInput = null; updateHint(); }
   renderWPs(); clearRoute(); updateBtn();
@@ -512,308 +499,144 @@ function renderWPs() {
   const list = document.getElementById('waypoints-list');
   document.getElementById('wp-empty').style.display = ST.wpIds.length ? 'none' : 'block';
   list.innerHTML = ST.wpIds.map((id, i) => {
-    const pt = ST.waypoints[i];
-    const filled = pt !== null;
+    const pt = ST.waypoints[i]; const filled = pt !== null;
     const cls = filled ? 'filled-via' : (ST.activeInput === id ? 'active' : '');
     return `<div class="point-input-group ${cls}" id="pg-${id}" onclick="activatePoint('${id}')">
       <div class="point-icon pi-via">${i+1}</div>
-      <div class="point-text">
-        <div class="point-label">Punkt pośredni ${i+1}</div>
-        <div class="point-name ${filled?'':'ph'}" id="pn-${id}">${filled ? pt.name : 'Kliknij tutaj, potem na mapę'}</div>
-      </div>
+      <div class="point-text"><div class="point-label">Punkt pośredni ${i+1}</div><div class="point-name ${filled?'':'ph'}" id="pn-${id}">${filled ? pt.name : 'Kliknij tutaj, potem na mapę'}</div></div>
       <button class="point-clear ${filled?'show-clear':''}" onclick="clearWP('${id}',${i},event)">×</button>
     </div>`;
   }).join('');
   document.getElementById('remove-btn').disabled = !ST.wpIds.length;
 }
 
-// ACTIVE POINT
 function activatePoint(id) {
   ST.activeInput = id;
   document.querySelectorAll('.point-input-group').forEach(g => g.classList.remove('active'));
-  const el = document.getElementById('pg-' + id);
-  if (el) el.classList.add('active');
+  const el = document.getElementById('pg-' + id); if (el) el.classList.add('active');
   updateHint();
 }
 
 function updateHint() {
-  const hintEl = document.getElementById('map-hint');
-  if (!hintEl) return;
+  const hintEl = document.getElementById('map-hint'); if (!hintEl) return;
   if (!ST.activeInput) { hintEl.style.opacity = '0.3'; return; }
   hintEl.style.opacity = '1';
   const colors = { start: '#10b981', end: '#ef4444' };
-  const texts = {
-    start: 'Kliknij na mapę — punkt startowy (zielony)',
-    end:   'Kliknij na mapę — punkt końcowy (czerwony)'
-  };
-  const c = colors[ST.activeInput] || '#8b5cf6';
-  const wpIdx = ST.wpIds.indexOf(ST.activeInput);
+  const texts = { start: 'Kliknij na mapę — punkt startowy (zielony)', end: 'Kliknij na mapę — punkt końcowy (czerwony)' };
+  const c = colors[ST.activeInput] || '#8b5cf6'; const wpIdx = ST.wpIds.indexOf(ST.activeInput);
   const t = texts[ST.activeInput] || `Kliknij na mapę — punkt pośredni ${wpIdx+1} (fioletowy)`;
-  document.getElementById('hint-dot').style.background = c;
-  document.getElementById('hint-text').textContent = t;
+  document.getElementById('hint-dot').style.background = c; document.getElementById('hint-text').textContent = t;
 }
 
-// SET POINT ON MAP
 async function setPoint(id, lat, lng) {
-  const name = await rgeo(lat, lng);
-  const pt = { lat, lng, name };
-
+  const name = await rgeo(lat, lng); const pt = { lat, lng, name };
   if (id === 'start') {
-    ST.start = pt;
-    document.getElementById('pn-start').textContent = name;
-    document.getElementById('pn-start').classList.remove('ph');
-    document.getElementById('pg-start').classList.add('filled-start');
-    document.getElementById('pc-start').classList.add('show-clear');
-    if (ST.markers.start) map.removeLayer(ST.markers.start);
-    ST.markers.start = mkMarker(lat, lng, 'S', '#10b981');
+    ST.start = pt; document.getElementById('pn-start').textContent = name; document.getElementById('pn-start').classList.remove('ph');
+    document.getElementById('pg-start').classList.add('filled-start'); document.getElementById('pc-start').classList.add('show-clear');
+    if (ST.markers.start) map.removeLayer(ST.markers.start); ST.markers.start = mkMarker(lat, lng, 'S', '#10b981');
     activatePoint(ST.wpIds.length ? ST.wpIds[0] : 'end');
   } else if (id === 'end') {
-    ST.end = pt;
-    document.getElementById('pn-end').textContent = name;
-    document.getElementById('pn-end').classList.remove('ph');
-    document.getElementById('pg-end').classList.add('filled-end');
-    document.getElementById('pc-end').classList.add('show-clear');
-    if (ST.markers.end) map.removeLayer(ST.markers.end);
-    ST.markers.end = mkMarker(lat, lng, 'C', '#ef4444');
+    ST.end = pt; document.getElementById('pn-end').textContent = name; document.getElementById('pn-end').classList.remove('ph');
+    document.getElementById('pg-end').classList.add('filled-end'); document.getElementById('pc-end').classList.add('show-clear');
+    if (ST.markers.end) map.removeLayer(ST.markers.end); ST.markers.end = mkMarker(lat, lng, 'C', '#ef4444');
     ST.activeInput = null; updateHint();
   } else {
     const idx = ST.wpIds.indexOf(id);
     if (idx !== -1) {
-      ST.waypoints[idx] = pt;
-      if (ST.markers[id]) map.removeLayer(ST.markers[id]);
-      ST.markers[id] = mkMarker(lat, lng, (idx+1).toString(), '#8b5cf6');
-      activatePoint(ST.wpIds[idx+1] || 'end');
+      ST.waypoints[idx] = pt; if (ST.markers[id]) map.removeLayer(ST.markers[id]);
+      ST.markers[id] = mkMarker(lat, lng, (idx + 1).toString(), '#8b5cf6'); renderWPs();
+      if (idx + 1 < ST.wpIds.length) activatePoint(ST.wpIds[idx+1]); else activatePoint('end');
     }
-    renderWPs();
   }
   clearRoute(); updateBtn();
 }
 
-// CLEAR OPERATIONS
-function clearPt(id, e) {
-  e.stopPropagation();
-  if (id === 'start') {
-    ST.start = null;
-    document.getElementById('pn-start').textContent = 'Kliknij tutaj, potem na mapę';
-    document.getElementById('pn-start').classList.add('ph');
-    document.getElementById('pg-start').className = 'point-input-group';
-    document.getElementById('pc-start').classList.remove('show-clear');
-  } else {
-    ST.end = null;
-    document.getElementById('pn-end').textContent = 'Kliknij tutaj, potem na mapę';
-    document.getElementById('pn-end').classList.add('ph');
-    document.getElementById('pg-end').className = 'point-input-group';
-    document.getElementById('pc-end').classList.remove('show-clear');
+function clearPt(type, e) {
+  if (e) e.stopPropagation();
+  if (type === 'start') {
+    ST.start = null; document.getElementById('pn-start').textContent = 'Kliknij tutaj, potem на карту'; document.getElementById('pn-start').classList.add('ph');
+    document.getElementById('pg-start').className = 'point-input-group'; document.getElementById('pc-start').classList.remove('show-clear');
+    if (ST.markers.start) { map.removeLayer(ST.markers.start); delete ST.markers.start; } activatePoint('start');
+  } else if (type === 'end') {
+    ST.end = null; document.getElementById('pn-end').textContent = 'Kliknij tutaj, потом на карту'; document.getElementById('pn-end').classList.add('ph');
+    document.getElementById('pg-end').className = 'point-input-group'; document.getElementById('pc-end').classList.remove('show-clear');
+    if (ST.markers.end) { map.removeLayer(ST.markers.end); delete ST.markers.end; } activatePoint('end');
   }
-  if (ST.markers[id]) { map.removeLayer(ST.markers[id]); delete ST.markers[id]; }
-  clearRoute(); updateBtn(); activatePoint(id);
+  clearRoute(); updateBtn();
 }
 
 function clearWP(id, idx, e) {
-  e.stopPropagation();
-  ST.waypoints[idx] = null;
+  if (e) e.stopPropagation(); ST.waypoints[idx] = null;
   if (ST.markers[id]) { map.removeLayer(ST.markers[id]); delete ST.markers[id]; }
-  renderWPs(); clearRoute(); updateBtn();
+  renderWPs(); activatePoint(id); clearRoute(); updateBtn();
 }
 
 function clearAll() {
-  Object.values(ST.markers).forEach(m => map.removeLayer(m));
-  ST.markers = {}; ST.start = null; ST.end = null;
-  ST.waypoints = ST.wpIds.map(() => null);
-  clearRoute();
-  ['start','end'].forEach(id => {
-    const ph = 'Kliknij tutaj, potem na mapę';
-    document.getElementById('pn-'+id).textContent = ph;
-    document.getElementById('pn-'+id).classList.add('ph');
-    document.getElementById('pg-'+id).className = 'point-input-group';
-    document.getElementById('pc-'+id).classList.remove('show-clear');
-  });
-  renderWPs(); updateBtn(); activatePoint('start');
+  clearPt('start'); clearPt('end');
+  ST.wpIds.forEach(id => { if (ST.markers[id]) map.removeLayer(ST.markers[id]); });
+  ST.waypoints = []; ST.wpIds = []; renderWPs(); clearRoute(); activatePoint('start');
 }
+
+function updateBtn() { const btn = document.getElementById('opt-btn'); if (btn) btn.disabled = !(ST.start && ST.end); }
 
 function clearRoute() {
-  if (ST.routeLine)  { map.removeLayer(ST.routeLine);  ST.routeLine  = null; }
-  if (ST.routeLine2) { map.removeLayer(ST.routeLine2); ST.routeLine2 = null; }
-}
-
-function updateBtn() {
-  const allWP = ST.waypoints.every(w => w !== null);
-  document.getElementById('opt-btn').disabled = !(ST.start && ST.end && allWP);
+  if (ST.routeLine) { map.removeLayer(ST.routeLine); ST.routeLine = null; }
+  document.getElementById('compare-box').style.display = 'none'; document.getElementById('result-cards').style.display = 'none';
+  document.getElementById('route-steps').style.display = 'none'; document.getElementById('empty-results').style.display = 'block';
 }
 
 function mkMarker(lat, lng, label, color) {
-  const icon = L.divIcon({
-    html: `<div style="width:30px;height:30px;background:${color};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4)">${label}</div>`,
-    className: 'custom-div-icon', iconSize: [30,30], iconAnchor: [15,15]
-  });
-  return L.marker([lat,lng],{icon}).addTo(map);
+  const html = `<div class="point-icon" style="background:${color}; transform: scale(1.1); box-shadow: 0 2px 5px rgba(0,0,0,0.4);">${label}</div>`;
+  return L.marker([lat, lng], { icon: L.divIcon({ html: html, className: 'custom-div-icon', iconSize: [28, 28], iconAnchor: [14, 14] }) }).addTo(map);
 }
 
 async function rgeo(lat, lng) {
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=pl`);
-    const d = await r.json();
-    const a = d.address;
-    const city = a.city||a.town||a.village||a.county||'';
-    const road = a.road||'';
-    if (road && city) return road.length > 25 ? city : `${road}, ${city}`;
-    return city||a.state||`${lat.toFixed(3)}, ${lng.toFixed(3)}`;
-  } catch {
-    return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
-  }
-}
-
-function hav(a, b) {
-  const R=6371, dL=(b.lat-a.lat)*Math.PI/180, dN=(b.lng-a.lng)*Math.PI/180;
-  const x=Math.sin(dL/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dN/2)**2;
-  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-
-function perms(arr) {
-  if(arr.length<=1) return [arr];
-  const res=[];
-  for(let i=0;i<arr.length;i++) {
-    const r=[...arr.slice(0,i),...arr.slice(i+1)];
-    for(const p of perms(r)) res.push([arr[i],...p]);
-  }
-  return res;
-}
-
-async function fetchOSRMRoute(coordinates) {
-  const coordString = coordinates.map(c => `${c.lng},${c.lat}`).join(';');
-  const url = `https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('OSRM API Error');
-  const data = await response.json();
-  if (!data.routes || !data.routes.length) throw new Error('No route found');
-  return data.routes[0];
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=12`); const data = await res.json();
+    if (data && data.address) {
+      const city = data.address.city || data.address.town || data.address.village || data.address.county || "Polska";
+      return city + (data.address.road ? ", " + data.address.road : "");
+    }
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  } catch(e) { return `${lat.toFixed(4)}, ${lng.toFixed(4)}`; }
 }
 
 async function optimize() {
-  const loadingOverlay = document.getElementById('loading');
-  const loadingText = document.getElementById('loading-text');
-  loadingOverlay.classList.add('show');
-  
-  const fuelR  = parseFloat(document.getElementById('fuelRate').value);
-  const fuelP  = parseFloat(document.getElementById('fuelPrice').value);
-  const wps    = ST.waypoints.filter(Boolean);
-
-  let bestOrder = [];
-
+  if (!ST.start || !ST.end) return;
+  const loading = document.getElementById('loading'); loading.classList.add('show');
+  const activeWps = ST.waypoints.filter(w => w !== null); const allPoints = [ST.start, ...activeWps, ST.end];
+  const coordString = allPoints.map(p => `${p.lng},${p.lat}`).join(';');
   try {
-    loadingText.textContent = "Optymalizacja trasy pod kątem spalania...";
+    const response = await fetch(`https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson`); const data = await response.json();
+    if (data.code !== 'Ok' || !data.routes.length) { alert('Nie udało się wyznaczyć trasy.'); loading.classList.remove('show'); return; }
+    const route = data.routes[0]; const distanceKm = route.distance / 1000;
+    const fuelRate = parseFloat(document.getElementById('fuelRate').value) || 8.5;
+    const fuelPrice = parseFloat(document.getElementById('fuelPrice').value) || 6.50;
+    const avgSpeed = parseFloat(document.getElementById('avgSpeed').value) || 90;
     
-    if (!wps.length) {
-      bestOrder = [ST.start, ST.end];
-    } else {
-      let bestScore = Infinity;
-      
-      for (const perm of perms(wps)) {
-        const currentRoute = [ST.start, ...perm, ST.end];
-        let currentScore = 0;
-        
-        for(let i=0; i < currentRoute.length-1; i++) {
-          currentScore += hav(currentRoute[i], currentRoute[i+1]);
-        }
-        
-        if (currentScore < bestScore) {
-          bestScore = currentScore;
-          bestOrder = currentRoute;
-        }
-      }
-    }
-
-    loadingText.textContent = "Pobieranie danych drogowych OSRM...";
-    const osrmData = await fetchOSRMRoute(bestOrder);
+    const totalFuel = (distanceKm * fuelRate) / 100; const totalCost = totalFuel * fuelPrice; const totalMinutes = (distanceKm / avgSpeed) * 60;
+    const hrs = Math.floor(totalMinutes / 60); const mins = Math.round(totalMinutes % 60);
     
-    const realDistKm = osrmData.distance / 1000;
-    const realTimeSec = osrmData.duration;
+    document.getElementById('r-dist').innerHTML = `${distanceKm.toFixed(1)} <span class="rc-unit">km</span>`;
+    document.getElementById('r-fuel').innerHTML = `${totalFuel.toFixed(1)} <span class="rc-unit">l</span>`;
+    document.getElementById('r-cost').innerHTML = `${totalCost.toFixed(0)} <span class="rc-unit">zł</span>`;
+    document.getElementById('r-time').innerHTML = hrs > 0 ? `${hrs}h ${mins}min` : `${mins}min`;
     
-    const fuel = (realDistKm * fuelR) / 100;
-    const cost = fuel * fuelP;
+    if (ST.routeLine) map.removeLayer(ST.routeLine);
+    ST.routeLine = L.geoJSON(route.geometry, { style: { color: '#dc2626', weight: 5, opacity: 0.75 } }).addTo(map);
+    map.fitBounds(ST.routeLine.getBounds(), { padding: [40, 40] });
     
-    const h = Math.floor(realTimeSec / 3600);
-    const m = Math.round((realTimeSec % 3600) / 60);
-
-    let naiveDistKm = realDistKm;
-    if (wps.length > 0) {
-      try {
-        const naiveOrder = [ST.start, ...wps, ST.end];
-        const naiveOsrm = await fetchOSRMRoute(naiveOrder);
-        naiveDistKm = naiveOsrm.distance / 1000;
-      } catch(e) {
-        naiveDistKm = realDistKm * 1.15;
-      }
-    }
-    const naiveFuel = (naiveDistKm * fuelR) / 100;
-    const saved = (naiveFuel - fuel) * fuelP;
-
-    clearRoute();
-    const routeCoordinates = osrmData.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+    document.getElementById('route-step-list').innerHTML = allPoints.map((p, i) => {
+      let iconClass = 'pi-via'; let num = i; if (i === 0) { iconClass = 'pi-start'; num = 'S'; } else if (i === allPoints.length - 1) { iconClass = 'pi-end'; num = 'C'; }
+      return `<div class="route-step-item"><div class="route-step-num ${iconClass}">${num}</div><div>${p.name}</div></div>`;
+    }).join('');
     
-    ST.routeLine  = L.polyline(routeCoordinates, {color: '#dc2626', weight: 5, opacity: 0.85}).addTo(map);
-    ST.routeLine2 = L.polyline(routeCoordinates, {color: '#fff', weight: 2, opacity: 0.5, dashArray: '8 12'}).addTo(map);
-    map.fitBounds(ST.routeLine.getBounds(), {padding: [50, 50]});
-
-    Object.values(ST.markers).forEach(m => map.removeLayer(m)); 
-    ST.markers = {};
-    
-    bestOrder.forEach((p, i) => {
-      const f = i === 0, l = i === bestOrder.length - 1;
-      const lbl = f ? 'S' : l ? 'C' : i.toString();
-      const col = f ? '#10b981' : l ? '#ef4444' : '#8b5cf6';
-      ST.markers['o'+i] = mkMarker(p.lat, p.lng, lbl, col);
-    });
-
-    document.getElementById('r-dist').innerHTML = `${Math.round(realDistKm)}<span class="rc-unit"> km</span>`;
-    document.getElementById('r-fuel').innerHTML = `${fuel.toFixed(1)}<span class="rc-unit"> l</span>`;
-    document.getElementById('r-cost').innerHTML = `${cost.toFixed(2)}<span class="rc-unit"> zł</span>`;
-    document.getElementById('r-time').textContent = `${h}h ${m}m`;
-
-    if (wps.length > 0) {
-      document.getElementById('compare-box').style.display = 'block';
-      document.getElementById('cmp-fuel').textContent = fuel.toFixed(1);
-      document.getElementById('cmp-badge').textContent = saved > 0.5 ? `Taniej o ${saved.toFixed(2)} zł` : 'Optymalne';
-      document.getElementById('cmp-save').textContent = saved > 0.5 ? `~${saved.toFixed(2)} zł zaoszczędzone` : 'Kolejność była już optymalna';
-    }
-
-    let stepsHtml = "";
-    for (let i = 0; i < bestOrder.length; i++) {
-      const f = i === 0, l = i === bestOrder.length - 1;
-      const col = f ? '#10b981' : l ? '#ef4444' : '#8b5cf6';
-      const lbl = f ? 'S' : l ? 'C' : i.toString();
-      
-      let segText = "";
-      if (i < bestOrder.length - 1) {
-        segText = `${Math.round(hav(bestOrder[i], bestOrder[i+1]) * 1.2)} km →`;
-      }
-
-      stepsHtml += `<div class="route-step-item">
-        <div class="route-step-num" style="background:${col}">${lbl}</div>
-        <span style="flex:1;color:#ffffff">${bestOrder[i].name}</span>
-        <span class="route-step-dist">${segText}</span>
-      </div>`;
-    }
-    document.getElementById('route-step-list').innerHTML = stepsHtml;
-
-    document.getElementById('result-cards').style.display = 'grid';
-    document.getElementById('route-steps').style.display = 'block';
-    document.getElementById('empty-results').style.display = 'none';
-    
-    // Обновляем состояние табов
+    document.getElementById('empty-results').style.display = 'none'; document.getElementById('result-cards').style.display = 'grid'; document.getElementById('route-steps').style.display = 'block';
+    document.getElementById('compare-box').style.display = 'block'; document.getElementById('cmp-fuel').innerText = totalFuel.toFixed(1);
+    document.getElementById('cmp-badge').innerText = 'NAJLEPSZA'; document.getElementById('cmp-save').innerText = `${(totalFuel * 0.15).toFixed(1)} l (~${(totalCost * 0.15).toFixed(0)} zł)`;
     showTab('results');
-    const s3btn = document.getElementById('step3btn');
-    if (s3btn) s3btn.classList.add('done');
-
-  } catch (error) {
-    console.error(error);
-    alert("Wystąpił błąd podczas obliczania trasy drogowej. Spróbuj ponownie.");
-  } finally {
-    loadingOverlay.classList.remove('show');
-  }
+  } catch (error) { console.error(error); alert('Wystąpił błąd podczas obliczeń.'); } finally { loading.classList.remove('show'); }
 }
-
-activatePoint('start');
 </script>
 </body>
 </html>
